@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">All Done</string>
+    <string name="app_title">To do list:</string>
+    <string name="empty_list">Nothing to do… yet!</string>
+    <string name="to_do_list_loading">Loading…</string>
+    <string name="category_personal">Personal</string>
+    <string name="category_professional">Professional</string>
+    <string name="category_social">Social</string>
+    <string name="category_travel">Travel</string>
+    <string name="compose_todo">Compose</string>
+    <string name="edit_label_title">Title</string>
+    <string name="edit_placeholder_title">e.g. Pack suitcase</string>
+    <string name="edit_label_description">Description</string>
+    <string name="edit_placeholder_description">e.g. Remember your toothbrush!</string>
+    <string name="edit_label_category">Category</string>
+    <string name="cta_save">Save</string>
+    <string name="cta_delete">Delete\n</string>
+    <string name="label_item_deleted">%s deleted</string>
+    <string name="cta_undo">Undo</string>
+    <string name="invalid_title">A title should have at least %s characters</string>
+    <string name="invalid_description">A description should have at least %s characters</string>
+    <string name="title_edit_screen">Edit item</string>
+    <string name="title_create_screen">Create item</string>
+    <string name="error_message">An error occurred, please contact support</string>
+    <string name="cta_share">Share %s</string>
+    <string name="cta_add_to_calendar">Add %s to calendar</string>
+    <string name="cta_edit_item">Edit %s</string>
+    <string name="ready_to_save">Ready to save</string>
+</resources>
