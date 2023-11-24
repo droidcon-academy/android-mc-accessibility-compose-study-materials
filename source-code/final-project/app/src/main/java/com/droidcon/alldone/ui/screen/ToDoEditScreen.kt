@@ -38,181 +38,186 @@ import com.droidcon.alldone.utils.validation.ValidateTitle
 
 @Composable
 fun ToDoEditScreen(
-    isEditing: Boolean,
-    title: String,
-    description: String,
-    category: ToDoCategory,
-    modifier: Modifier = Modifier,
-    onSave: (String, String, ToDoCategory) -> Unit,
-    onDelete: () -> Unit
+	isEditing: Boolean,
+	title: String,
+	description: String,
+	category: ToDoCategory,
+	modifier: Modifier = Modifier,
+	onSave: (String, String, ToDoCategory) -> Unit,
+	onDelete: () -> Unit
 ) {
-    var itemTitle by rememberSaveable { mutableStateOf(title) }
-    var itemDescription by rememberSaveable { mutableStateOf(description) }
-    var itemCategory by rememberSaveable { mutableStateOf(category) }
+	var itemTitle by rememberSaveable { mutableStateOf(title) }
+	var itemDescription by rememberSaveable { mutableStateOf(description) }
+	var itemCategory by rememberSaveable { mutableStateOf(category) }
 
-    var isTitleValid by rememberSaveable { mutableStateOf(true) }
-    var isDescriptionValid by rememberSaveable { mutableStateOf(true) }
+	val titleError = stringResource(id = R.string.invalid_title, ValidateTitle.minimumLength)
+	val descriptionError =
+		stringResource(id = R.string.invalid_description, ValidateDescription.minimumLength)
+	val saveReadyDescription = stringResource(R.string.ready_to_save)
+	val localView = LocalView.current
 
-    val titleError = stringResource(id = R.string.invalid_title, ValidateTitle.minimumLength)
-    val descriptionError = stringResource(id = R.string.invalid_description, ValidateDescription.minimumLength)
-    val saveReadyDescription = stringResource(R.string.ready_to_save)
-    val localView = LocalView.current
+	var isTitleValid by rememberSaveable {
+		mutableStateOf(true)
+	}
+	var isDescriptionValid by rememberSaveable {
+		mutableStateOf(true)
+	}
 
-    fun validateInputs() {
-        ValidateTitle(itemTitle).fold({
-            isTitleValid = false
-        }, {
-            isTitleValid = true
-        })
-        ValidateDescription(itemDescription).fold({
-            isDescriptionValid = false
-        }, {
-            isDescriptionValid = true
-        })
+	fun validateInputs() {
+		isTitleValid = ValidateTitle(itemTitle).fold(
+			{ false },
+			{ true }
+		)
+		isDescriptionValid = ValidateDescription(itemDescription).fold(
+			{ false },
+			{ true }
+		)
+		if (isTitleValid && isDescriptionValid) {
+			localView.announceForAccessibility(saveReadyDescription)
+		}
+	}
 
-        if (isTitleValid && isDescriptionValid) {
-            localView.announceForAccessibility(saveReadyDescription)
-        }
-    }
+	Column(
+		modifier = modifier.padding(start = 12.dp, end = 12.dp, top = 12.dp)
+	) {
+		Text(
+			modifier = Modifier.semantics { heading() },
+			fontSize = 24.sp,
+			fontWeight = FontWeight.Bold,
+			text = stringResource(
+				id = if (isEditing) {
+					R.string.title_edit_screen
+				} else {
+					R.string.title_create_screen
+				}
+			)
+		)
+		OutlinedTextField(
+			label = { Text(text = stringResource(id = R.string.edit_label_title)) },
+			placeholder = {
+				Text(text = stringResource(id = R.string.edit_placeholder_title))
+			},
+			isError = !isTitleValid,
+			trailingIcon = { TrailingWarningIcon(isValid = isTitleValid) },
+			supportingText = {
+				if (!isTitleValid) {
+					Text(
+						text = titleError,
+						color = MaterialTheme.colorScheme.error
+					)
+				}
+			},
+			modifier = Modifier.fillMaxWidth(),
+			value = itemTitle,
+			onValueChange = {
+				itemTitle = it
+				if (!isTitleValid) {
+					validateInputs()
+				}
+			}
+		)
+		Spacer(modifier = Modifier.height(5.dp))
+		OutlinedTextField(
+			label = { Text(text = stringResource(id = R.string.edit_label_description)) },
+			placeholder = {
+				Text(text = stringResource(id = R.string.edit_placeholder_description))
+			},
+			isError = !isDescriptionValid,
+			trailingIcon = { TrailingWarningIcon(isValid = isDescriptionValid) },
+			supportingText = {
+				if (!isDescriptionValid) {
+					Text(
+						text = descriptionError,
+						color = MaterialTheme.colorScheme.error
+					)
+				}
+			},
+			modifier = Modifier.fillMaxWidth(),
+			value = itemDescription,
+			onValueChange = {
+				itemDescription = it
+				if (!isDescriptionValid) {
+					validateInputs()
+				}
+			}
+		)
 
-    Column(
-        modifier = modifier.padding(start = 12.dp, end = 12.dp, top = 12.dp)
-    ) {
-        Text(
-            modifier = Modifier.semantics { heading() },
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            text = stringResource(
-                id = if (isEditing) {
-                    R.string.title_edit_screen
-                } else {
-                    R.string.title_create_screen
-                }
-            )
-        )
-        OutlinedTextField(
-            value = itemTitle,
-            label = { Text(text = stringResource(id = R.string.edit_label_title)) },
-            modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text(text = stringResource(id = R.string.edit_placeholder_title)) },
-            isError = !isTitleValid,
-            trailingIcon = { TrailingWarningIcon(isTitleValid) },
-            supportingText = {
-                if (!isTitleValid) {
-                    Text(
-                        text = titleError,
-                        color = MaterialTheme.colorScheme.error
-                    )
+		Spacer(modifier = Modifier.height(5.dp))
+		Text(
+			text = stringResource(id = R.string.edit_label_category),
+			modifier = Modifier.semantics { heading() }
+		)
+		RadioButtonGroup(
+			selectedOptionIndex = ToDoCategory.values().indexOf(category),
+			radioOptions = ToDoCategory.values().map { categoryElement ->
+				object : RadioButtonGroup.Describable<ToDoCategory> {
+					override val value = categoryElement
+					override val description: String =
+						stringResource(
+							id = when (categoryElement) {
+								ToDoCategory.PERSONAL -> R.string.category_personal
+								ToDoCategory.PROFESSIONAL -> R.string.category_professional
+								ToDoCategory.SOCIAL -> R.string.category_social
+								ToDoCategory.TRAVEL -> R.string.category_travel
+							}
+						)
+				}
+			},
+		) { itemCategory = it }
 
-                }
-            },
-            onValueChange = {
-                itemTitle = it
-                if (!isTitleValid) {
-                    validateInputs()
-                }
-            }
-        )
-        Spacer(modifier = Modifier.height(5.dp))
-        OutlinedTextField(
-            value = itemDescription,
-            label = { Text(text = stringResource(id = R.string.edit_label_description)) },
-            modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text(text = stringResource(id = R.string.edit_placeholder_description)) },
-            isError = !isDescriptionValid,
-            trailingIcon = { TrailingWarningIcon(isDescriptionValid) },
-            supportingText = {
-                if (!isDescriptionValid) {
-                    Text(
-                        text = descriptionError,
-                        color = MaterialTheme.colorScheme.error
-                    )
-                }
-            },
-            onValueChange = {
-                itemDescription = it
-                if (!isDescriptionValid) {
-                    validateInputs()
-                }
-            }
-        )
-
-        Spacer(modifier = Modifier.height(5.dp))
-        Text(
-            text = stringResource(id = R.string.edit_label_category),
-            modifier = Modifier.semantics { heading() }
-        )
-        RadioButtonGroup(
-            selectedOptionIndex = ToDoCategory.values().indexOf(itemCategory),
-            radioOptions = ToDoCategory.values().map { categoryElement ->
-                object : RadioButtonGroup.Describable<ToDoCategory> {
-                    override val value = categoryElement
-                    override val description: String =
-                        stringResource(
-                            id = when (categoryElement) {
-                                ToDoCategory.PERSONAL -> R.string.category_personal
-                                ToDoCategory.PROFESSIONAL -> R.string.category_professional
-                                ToDoCategory.SOCIAL -> R.string.category_social
-                                ToDoCategory.TRAVEL -> R.string.category_travel
-                            }
-                        )
-                }
-            },
-        ) { itemCategory = it }
-
-        OutlinedButton(
-            modifier = Modifier
-                .fillMaxWidth(),
-            enabled = isTitleValid && isDescriptionValid,
-            onClick = {
-                validateInputs()
-                if (isTitleValid && isDescriptionValid) {
-                    onSave(itemTitle, itemDescription, itemCategory)
-                }
-            }
-        ) {
-            Text(
-                text = stringResource(id = R.string.cta_save),
-                fontSize = 20.sp,
-            )
-        }
-        if (isEditing) {
-            Spacer(modifier = Modifier.weight(1.0f))
-            OutlinedButton(
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.outlinedButtonColors(containerColor = MaterialTheme.colorScheme.errorContainer),
-                onClick = onDelete
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Delete,
-                    tint = MaterialTheme.colorScheme.error,
-                    contentDescription = null
-                )
-                Text(
-                    text = stringResource(id = R.string.cta_delete),
-                    color = MaterialTheme.colorScheme.error,
-                    maxLines = 1,
-                    fontSize = 20.sp,
-                )
-            }
-            Spacer(modifier = Modifier.height(10.dp))
-        }
-    }
+		OutlinedButton(
+			modifier = Modifier
+				.fillMaxWidth(),
+			enabled = isTitleValid && isDescriptionValid,
+			onClick = {
+				validateInputs()
+				if (isTitleValid && isDescriptionValid) {
+					onSave(itemTitle, itemDescription, itemCategory)
+				}
+			}
+		) {
+			Text(
+				text = stringResource(id = R.string.cta_save),
+				fontSize = 20.sp,
+			)
+		}
+		if (isEditing) {
+			Spacer(modifier = Modifier.weight(1.0f))
+			OutlinedButton(
+				modifier = Modifier.fillMaxWidth(),
+				colors = ButtonDefaults.outlinedButtonColors(containerColor = MaterialTheme.colorScheme.errorContainer),
+				onClick = onDelete
+			) {
+				Icon(
+					imageVector = Icons.Outlined.Delete,
+					tint = MaterialTheme.colorScheme.error,
+					contentDescription = null
+				)
+				Text(
+					text = stringResource(id = R.string.cta_delete),
+					color = MaterialTheme.colorScheme.error,
+					maxLines = 1,
+					fontSize = 20.sp,
+				)
+			}
+			Spacer(modifier = Modifier.height(10.dp))
+		}
+	}
 }
 
 @Preview
 @Composable
 private fun ToDoEditScreenPreview() {
-    AllDoneTheme {
-        Surface {
-            ToDoEditScreen(
-                isEditing = false,
-                title = "Title",
-                description = "Description",
-                category = ToDoCategory.SOCIAL,
-                onSave = { _, _, _ -> },
-                onDelete = {}
-            )
-        }
-    }
+	AllDoneTheme {
+		Surface {
+			ToDoEditScreen(
+				isEditing = false,
+				title = "Title",
+				description = "Description",
+				category = ToDoCategory.SOCIAL,
+				onSave = { _, _, _ -> },
+				onDelete = {}
+			)
+		}
+	}
 }

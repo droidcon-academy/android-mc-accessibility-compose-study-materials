@@ -31,7 +31,6 @@ class ToDoEditActivity : ComponentActivity() {
                 ) {
                     val toDoListViewModel: ToDoListViewModel = viewModel()
 
-
                     ToDoEditScreen(
                         isEditing = toDoItem.id != -1,
                         title = toDoItem.title,

@@ -22,10 +22,10 @@ import com.droidcon.alldone.viewmodel.ToDoListViewModel
 @Composable
 fun ToDoListScreen(
     uiState: ToDoListViewModel.ToDoListUiState,
+    editItem: (ToDoItem, EditMode) -> Unit,
     listState: LazyListState,
     modifier: Modifier = Modifier,
-    editItem: (ToDoItem, EditMode) -> Unit,
-    showSnackBar: (String, String, () -> Unit) -> Unit
+    showSnackbar: (String, String, () -> Unit) -> Unit
 ) {
     when (uiState) {
         ToDoListViewModel.ToDoListUiState.EmptyList -> {
@@ -41,11 +41,11 @@ fun ToDoListScreen(
         }
 
         is ToDoListViewModel.ToDoListUiState.ToDoList -> {
-            ToDoList(uiState.toDoItems, listState, modifier) { newItem, editMode ->
+            ToDoList(uiState.list, listState, modifier) { newItem, editMode ->
                 editItem(newItem, editMode)
             }
             uiState.recentlyDeleted?.apply {
-                showSnackBar(
+                showSnackbar(
                     stringResource(id = R.string.label_item_deleted, this.title),
                     stringResource(id = R.string.cta_undo)
                 ) {
@@ -63,7 +63,7 @@ private fun ToDoListScreenPreview() {
         Surface {
             ToDoListScreen(
                 uiState = ToDoListViewModel.ToDoListUiState.ToDoList(
-                    toDoItems =  OrganiseToDoList(listOf(
+                    list = OrganiseToDoList(listOf(
                         ToDoItem(-1, "Personal 1", "Personal 1 description",ToDoCategory.PERSONAL),
                         ToDoItem(-1, "Personal 2", "Personal 2 description",ToDoCategory.PERSONAL),
                         ToDoItem(-1, "Travel 1", "Travel 1 description",ToDoCategory.TRAVEL),
@@ -82,7 +82,7 @@ private fun ToDoListScreenPreview() {
                 ),
                 editItem = {_,_ -> },
                 listState = rememberLazyListState(),
-                showSnackBar = { _, _, _ -> }
+                showSnackbar = {_,_,_ -> }
             )
         }
     }

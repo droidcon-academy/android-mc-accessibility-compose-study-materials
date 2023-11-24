@@ -3,6 +3,7 @@ package com.droidcon.alldone.ui.component
 
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,7 +18,6 @@ import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Surface
@@ -42,6 +42,7 @@ import com.droidcon.alldone.model.ToDoCategory
 import com.droidcon.alldone.model.ToDoItem
 import com.droidcon.alldone.ui.theme.AllDoneTheme
 import com.droidcon.alldone.utils.EditMode
+import com.droidcon.alldone.utils.preview.AccessibilityPreview
 import com.popovanton0.blueprint.Blueprint
 import com.popovanton0.blueprint.blueprintId
 import com.popovanton0.blueprint.dsl.Position.Horizontal.Companion.End
@@ -72,7 +73,8 @@ fun ToDoListItem(
             contentColor = MaterialTheme.colorScheme.onSecondaryContainer
         ),
         border = BorderStroke(2.dp, MaterialTheme.colorScheme.inverseOnSurface),
-        modifier = modifier
+        modifier =
+        modifier
             .blueprintId("ToDoListItemCard")
             .testTag("OutlinedCard_ToDoListItem")
             .padding(horizontal = 12.dp, vertical = 1.dp)
@@ -80,10 +82,9 @@ fun ToDoListItem(
                 role = Role.Checkbox,
                 value = toDoItem.complete,
                 onValueChange = {
-                    updateItem(
-                        toDoItem.copy(
-                            complete = !toDoItem.complete
-                        ), EditMode.IN_PLACE
+                    updateItem(toDoItem.copy(
+                        complete = !toDoItem.complete
+                    ), EditMode.IN_PLACE
                     )
                 }
             )
@@ -124,48 +125,54 @@ fun ToDoListItem(
             Spacer(modifier = Modifier.weight(1.0f))
             Checkbox(
                 checked = toDoItem.complete,
-                onCheckedChange = null,
+                onCheckedChange = {
+                    updateItem(
+                        toDoItem.copy(
+                            complete = !toDoItem.complete
+                        ), EditMode.IN_PLACE
+                    )
+                },
                 modifier = Modifier
                     .testTag("OutlinedCard_ToDoListItem_Checkbox")
                     .padding(horizontal = 12.dp)
-                    .clearAndSetSemantics {}
+                    .clearAndSetSemantics {  }
             )
         }
-        Row(modifier = Modifier.clearAndSetSemantics { }) {
-            IconButton(
+        Row(
+            Modifier.padding(12.dp).clearAndSetSemantics {  }
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Share,
+                contentDescription = shareDescription,
                 modifier = Modifier
-                    .blueprintId("ShareButton"),
-                onClick = shareAction
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Share,
-                    contentDescription = shareDescription
-                )
-            }
-            IconButton(
+                    .blueprintId("ShareButton")
+                    .clickable(onClick = shareAction)
+            )
+
+            Spacer(modifier = Modifier.width(12.dp))
+
+            Icon(
+                imageVector = Icons.Filled.DateRange,
+                contentDescription = addToCalendarDescription,
                 modifier = Modifier
-                    .blueprintId("AddToCalendarButton"),
-                onClick = addToCalendarAction
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.DateRange,
-                    contentDescription = addToCalendarDescription
-                )
-            }
+                    .blueprintId("AddToCalendarButton")
+                    .clickable(onClick = addToCalendarAction)
+            )
+
             Spacer(modifier = Modifier.weight(1.0f))
-            IconButton(
+
+            Icon(
+                imageVector = Icons.Filled.Edit,
+                contentDescription = editDescription,
                 modifier = Modifier
-                    .blueprintId("EditButton"),
-                onClick = { updateItem(toDoItem, EditMode.FULL_SCREEN) }) {
-                Icon(
-                    imageVector = Icons.Filled.Edit,
-                    contentDescription = editDescription
-                )
-            }
+                    .blueprintId("EditButton")
+                    .clickable(onClick = editAction)
+            )
         }
         Spacer(modifier = modifier.height(6.dp))
     }
 }
+
 
 @Preview
 @Composable

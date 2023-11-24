@@ -5,7 +5,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.toggleable
@@ -31,11 +30,16 @@ import com.droidcon.alldone.ui.theme.AllDoneTheme
  * [androidx.compose.material3.FilterChip] is still experimental
  */
 @Composable
-fun ChoiceChip(text: String, checked: Boolean, onValueChange: (Boolean) -> Unit) {
+fun ChoiceChip(
+    text: String,
+    checked: Boolean,
+    modifier: Modifier = Modifier,
+    onValueChange: (Boolean) -> Unit
+) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .padding(vertical = 6.dp)
-            .defaultMinSize(minWidth = 36.dp, minHeight = 36.dp)
+            .defaultMinSize(minHeight = 36.dp, minWidth = 36.dp)
             .toggleable(
                 role = Role.Switch,
                 value = checked,

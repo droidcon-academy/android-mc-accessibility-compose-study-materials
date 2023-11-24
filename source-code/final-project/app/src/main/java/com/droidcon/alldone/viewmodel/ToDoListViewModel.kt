@@ -70,7 +70,7 @@ class ToDoListViewModel @Inject constructor(val repository: Repository) : ViewMo
         object EmptyList : ToDoListUiState()
         data class ErrorState(val error: ToDoListUiError) : ToDoListUiState()
         data class ToDoList(
-            val toDoItems: Map<ToDoCategory, List<ToDoItem>>,
+            val list: Map<ToDoCategory, List<ToDoItem>>,
             val recentlyDeleted: ToDoItem? = null
         ) : ToDoListUiState()
     }

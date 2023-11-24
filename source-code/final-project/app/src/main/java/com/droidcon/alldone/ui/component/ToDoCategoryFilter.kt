@@ -16,8 +16,8 @@ import com.droidcon.alldone.ui.theme.AllDoneTheme
 
 @Composable
 fun ToDoCategoryFilter(
-    selectedCategories: List<ToDoCategory>,
     modifier: Modifier = Modifier,
+    selectedCategories: List<ToDoCategory>,
     onValueChange: (List<ToDoCategory>) -> Unit
 ) {
     LazyRow(
