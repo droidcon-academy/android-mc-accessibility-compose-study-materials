@@ -26,21 +26,17 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.droidcon.alldone.ui.theme.AllDoneTheme
+import com.droidcon.alldone.utils.preview.FontScalePreview
 
 /**
  * [androidx.compose.material3.FilterChip] is still experimental
  */
 @Composable
-fun ChoiceChip(
-    text: String,
-    checked: Boolean,
-    modifier: Modifier = Modifier,
-    onValueChange: (Boolean) -> Unit
-) {
+fun ChoiceChip(text: String, checked: Boolean, onValueChange: (Boolean) -> Unit) {
     Row(
-        modifier = modifier
+        modifier = Modifier
             .padding(vertical = 6.dp)
-            .defaultMinSize(minHeight = 36.dp, minWidth = 36.dp)
+            .defaultMinSize(minWidth = 36.dp, minHeight = 36.dp)
             .toggleable(
                 role = Role.Switch,
                 value = checked,
@@ -79,7 +75,7 @@ fun ChoiceChip(
     }
 }
 
-@Preview
+@FontScalePreview
 @Composable
 private fun ChoiceChipPreview() {
     Surface {
