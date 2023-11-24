@@ -1,0 +1,39 @@
+import com.popovanton0.blueprint.dsl.Position.Horizontal.Companion.End
+import com.popovanton0.blueprint.dsl.Position.Vertical.Companion.Bottom
+
+
+@Preview
+@Composable
+private fun ToDoListItemPreview() {
+    AllDoneTheme {
+        Surface(modifier = Modifier.padding(5.dp)) {
+            Blueprint(
+                blueprintBuilder = {
+                    widths {
+                        group {
+                            "ShareButton".left lineTo "ShareButton".right
+                            "AddToCalendarButton".left lineTo "AddToCalendarButton".right
+                            "EditButton".left lineTo "EditButton".right
+                        }
+                        group(Bottom) {
+                            "ToDoListItemCard".left lineTo "ToDoListItemCard".right
+                        }
+                    }
+                    heights {
+                        group { "ShareButton".top lineTo "ShareButton".bottom }
+                        group(End) { "ToDoListItemCard".top lineTo "ToDoListItemCard".bottom }
+                    }
+                }
+            ) {
+                ToDoListItem(
+                    ToDoItem(
+                        id = 0,
+                        title = "Write App",
+                        description = "You need to write an app",
+                        category = ToDoCategory.PERSONAL,
+                    )
+                ) { _, _ -> /* Update: No-op */ }
+            }
+        }
+    }
+}
