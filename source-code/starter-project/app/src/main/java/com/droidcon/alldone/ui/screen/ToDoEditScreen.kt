@@ -20,6 +20,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.heading
 import androidx.compose.ui.semantics.semantics
@@ -47,6 +48,11 @@ fun ToDoEditScreen(
     var itemTitle by rememberSaveable { mutableStateOf(title) }
     var itemDescription by rememberSaveable { mutableStateOf(description) }
     var itemCategory by rememberSaveable { mutableStateOf(category) }
+
+    val titleError = stringResource(id = R.string.invalid_title, ValidateTitle.minimumLength)
+    val descriptionError = stringResource(id = R.string.invalid_description, ValidateDescription.minimumLength)
+    val saveReadyDescription = stringResource(R.string.ready_to_save)
+    val localView = LocalView.current
 
     var isTitleValid by rememberSaveable {
         mutableStateOf(ValidateTitle(title).fold(
