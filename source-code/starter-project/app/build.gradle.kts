@@ -5,16 +5,18 @@ plugins {
     id("kotlin-kapt")
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
+
+    id("org.jetbrains.kotlin.plugin.compose") version ("2.0.0")
 }
 
 android {
     namespace = "com.droidcon.alldone"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.droidcon.alldone"
         minSdk = 23
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -63,8 +65,8 @@ dependencies {
     val arrowVersion = "1.2.1"
     val moshiVersion = "1.15.0"
     val hiltCompiler = "1.0.0"
-    val hiltAndroid = "2.48"
-    val blueprint = "1.0.0-alpha02"
+    val hiltAndroid = "2.51.1"
+    val blueprint = "1.0.0-alpha05"
 
     implementation("androidx.core:core-ktx:$coreKtx")
 
